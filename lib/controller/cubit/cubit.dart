@@ -10,13 +10,10 @@ class TodoCubit extends Cubit<TodoStates> {
           InitialTodoState(),
         );
 
-  // todo 2
   static TodoCubit get(context) => BlocProvider.of(context);
 
-  // todo 3
   Database? database;
 
-  // todo 4 (finish)
   void createDatabase() {
     // path here is the file name
     // db = DataBase
@@ -50,6 +47,22 @@ class TodoCubit extends Cubit<TodoStates> {
       },
     ).catchError((error) {
       log('error when opening the file');
+    });
+  }
+
+  // todo 1 (finish)
+  void insertToDatabase() {
+    database?.transaction((txn) async {
+      txn
+          .rawInsert(
+        'INSERT INTO tasks(title,date,time,description) VALUES("example title","example date","example time","example description")',
+      )
+          .then((value) {
+        log('$value');
+        emit(InsertingIntoTodoDatabaseState());
+      }).catchError((error) {
+        log('an error when inserting into database');
+      });
     });
   }
 }
