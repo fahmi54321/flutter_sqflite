@@ -38,6 +38,18 @@ class TodoCubit extends Cubit<TodoStates> {
           log('an error when creating the table');
         },
       );
+    }, onOpen: (db) {
+      log('database file is opened');
+    }).then(
+      (value) {
+        // the database file is succeed to open
+        database = value;
+        emit(
+          CreateTodoDatabaseState(),
+        );
+      },
+    ).catchError((error) {
+      log('error when opening the file');
     });
   }
 }
