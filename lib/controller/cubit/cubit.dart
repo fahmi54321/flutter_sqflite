@@ -70,7 +70,6 @@ class TodoCubit extends Cubit<TodoStates> {
     });
   }
 
-  // todo 1 (finish)
   void gettingDataFromDatabase() {
     database?.rawQuery('SELECT * FROM tasks').then((value) {
       log('our data is appearing');
@@ -78,6 +77,34 @@ class TodoCubit extends Cubit<TodoStates> {
       emit(SuccesGettingDataFromTodoDatabaseState());
     }).catchError((error) {
       log('an error when getting data from database ${error.toString()}');
+    });
+  }
+
+  // todo 1 (finish)
+  void updateDataFromDatabase({
+    required String title,
+    required String date,
+    required String time,
+    required String description,
+    required String id,
+  }) {
+    database
+        ?.update(
+      'tasks',
+      {
+        'title': title,
+        'date': date,
+        'time': time,
+        'description': description,
+      },
+      where: 'id =?',
+      whereArgs: [id],
+    )
+        .then((value) {
+      log('updating data has successfully happened $value');
+      gettingDataFromDatabase();
+    }).catchError((error) {
+      log('error when updating data $error');
     });
   }
 }
