@@ -50,7 +50,6 @@ class TodoCubit extends Cubit<TodoStates> {
     });
   }
 
-  // todo 1 (finish)
   void insertToDatabase({
     required String title,
     required String date,
@@ -68,6 +67,17 @@ class TodoCubit extends Cubit<TodoStates> {
       }).catchError((error) {
         log('an error when inserting into database');
       });
+    });
+  }
+
+  // todo 1 (finish)
+  void gettingDataFromDatabase() {
+    database?.rawQuery('SELECT * FROM tasks').then((value) {
+      log('our data is appearing');
+      log('$value');
+      emit(SuccesGettingDataFromTodoDatabaseState());
+    }).catchError((error) {
+      log('an error when getting data from database ${error.toString()}');
     });
   }
 }
