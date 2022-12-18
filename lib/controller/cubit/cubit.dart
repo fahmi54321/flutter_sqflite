@@ -51,11 +51,16 @@ class TodoCubit extends Cubit<TodoStates> {
   }
 
   // todo 1 (finish)
-  void insertToDatabase() {
+  void insertToDatabase({
+    required String title,
+    required String date,
+    required String time,
+    required String description,
+  }) {
     database?.transaction((txn) async {
       txn
           .rawInsert(
-        'INSERT INTO tasks(title,date,time,description) VALUES("example title","example date","example time","example description")',
+        'INSERT INTO tasks(title,date,time,description) VALUES("$title","$date","$time","$description")',
       )
           .then((value) {
         log('$value');
