@@ -80,7 +80,6 @@ class TodoCubit extends Cubit<TodoStates> {
     });
   }
 
-  // todo 1 (finish)
   void updateDataFromDatabase({
     required String title,
     required String date,
@@ -105,6 +104,19 @@ class TodoCubit extends Cubit<TodoStates> {
       gettingDataFromDatabase();
     }).catchError((error) {
       log('error when updating data $error');
+    });
+  }
+
+  // todo 1 (finish)
+  void deleteDataFromDatabase({required int id}) {
+    database?.delete(
+      'DELETE FROM tasks WHERE id = ?',
+      whereArgs: [id],
+    ).then((value) {
+      log('$value deleted successfully');
+      gettingDataFromDatabase();
+    }).catchError((error) {
+      log('error when deleting data $error');
     });
   }
 }
