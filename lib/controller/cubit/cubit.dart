@@ -13,6 +13,7 @@ class TodoCubit extends Cubit<TodoStates> {
   static TodoCubit get(context) => BlocProvider.of(context);
 
   Database? database;
+  List tasks = [];
 
   void createDatabase() {
     // path here is the file name
@@ -37,6 +38,7 @@ class TodoCubit extends Cubit<TodoStates> {
       );
     }, onOpen: (db) {
       log('database file is opened');
+      gettingDataFromDatabase(database);
     }).then(
       (value) {
         // the database file is succeed to open
@@ -63,6 +65,7 @@ class TodoCubit extends Cubit<TodoStates> {
       )
           .then((value) {
         log('$value');
+        gettingDataFromDatabase(database);
         emit(InsertingIntoTodoDatabaseState());
       }).catchError((error) {
         log('an error when inserting into database');
@@ -70,10 +73,13 @@ class TodoCubit extends Cubit<TodoStates> {
     });
   }
 
-  void gettingDataFromDatabase() {
+  void gettingDataFromDatabase(Database? database) {
     database?.rawQuery('SELECT * FROM tasks').then((value) {
       log('our data is appearing');
       log('$value');
+      for (var i in value) {
+        tasks.add(i);
+      }
       emit(SuccesGettingDataFromTodoDatabaseState());
     }).catchError((error) {
       log('an error when getting data from database ${error.toString()}');
@@ -101,7 +107,7 @@ class TodoCubit extends Cubit<TodoStates> {
     )
         .then((value) {
       log('updating data has successfully happened $value');
-      gettingDataFromDatabase();
+      gettingDataFromDatabase(database);
     }).catchError((error) {
       log('error when updating data $error');
     });
@@ -114,7 +120,7 @@ class TodoCubit extends Cubit<TodoStates> {
       whereArgs: [id],
     ).then((value) {
       log('$value deleted successfully');
-      gettingDataFromDatabase();
+      gettingDataFromDatabase(database);
     }).catchError((error) {
       log('error when deleting data $error');
     });
